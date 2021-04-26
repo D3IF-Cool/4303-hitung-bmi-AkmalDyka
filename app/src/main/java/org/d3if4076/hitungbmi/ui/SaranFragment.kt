@@ -11,7 +11,7 @@ import org.d3if4076.hitungbmi.R
 import org.d3if4076.hitungbmi.data.KategoriBmi
 import org.d3if4076.hitungbmi.databinding.FragmentSaranBinding
 
-class SaranFragment : Fragment() {
+class   SaranFragment : Fragment() {
     private val args: SaranFragmentArgs by navArgs()
     private lateinit var binding: FragmentSaranBinding
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,

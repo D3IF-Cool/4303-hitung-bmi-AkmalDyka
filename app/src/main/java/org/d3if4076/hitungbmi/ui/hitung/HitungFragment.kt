@@ -1,4 +1,4 @@
-package org.d3if4076.hitungbmi.ui
+package org.d3if4076.hitungbmi.ui.hitung
 
 import android.content.Intent
 import android.os.Bundle
@@ -12,10 +12,10 @@ import androidx.navigation.fragment.findNavController
 import org.d3if4076.hitungbmi.R
 import org.d3if4076.hitungbmi.data.KategoriBmi
 import org.d3if4076.hitungbmi.databinding.FragmentHitungBinding
+import org.d3if4076.hitungbmi.ui.HitungFragmentDirections
 
 class HitungFragment : Fragment() {
     private lateinit var binding: FragmentHitungBinding
-    private lateinit var kategoriBmi: KategoriBmi
     private val viewModel: HitungViewModel by viewModels()
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -36,8 +36,24 @@ class HitungFragment : Fragment() {
         super.onCreate(savedInstanceState)
     }
 
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding = FragmentHitungBinding.inflate(layoutInflater, container, false)
+        binding.button.setOnClickListener { hitungBmi() }
+        binding.saranButton.setOnClickListener { viewModel.mulaiNavigasi() }
+        binding.shareButton.setOnClickListener { shareData() }
+        setHasOptionsMenu(true)
+        return binding.root
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel.getNavigasi().observe(viewLifecycleOwner, {
+            if (it == null) return@observe
+            findNavController().navigate(HitungFragmentDirections
+                    .actionHitungFragmentToSaranFragment(it))
+            viewModel.selesaiNavigasi()
+        })
+
         viewModel.getHasilBmi().observe(viewLifecycleOwner, {
             if (it == null) return@observe
             binding.bmiTextView.text = getString(R.string.bmi_x, it.bmi)
@@ -82,7 +98,7 @@ class HitungFragment : Fragment() {
 
     private fun getKategori(kategori: KategoriBmi): String {
 
-        val stringRes = when (kategoriBmi) {
+        val stringRes = when (kategori) {
             KategoriBmi.KURUS -> R.string.kurus
             KategoriBmi.IDEAL -> R.string.ideal
             KategoriBmi.GEMUK -> R.string.gemuk
